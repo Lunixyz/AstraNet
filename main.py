@@ -31,17 +31,39 @@ last_state = {
 
 #   Dicionários de conversão
 #       Trocam palavras-chave para traduções
-#       Iteráveis, logo dicionário["chave"] = "valor"!
+#       dicionário["chave"] = "valor".
 
-status_dictionary = { "unknown": "Sem conexão com a API. ❌", "normal": "Normal ✅", "surge": "Falhando ⁉️", "delayed": "Lento 🐢", "idle": "Inativo 💤", "offline": "Fora do ar ❌" }
-capacity_dictionary = { "unknown": "Sem conexão...", "full": "Cheia", "high": "Alta", "medium": "Média", "low": "Baixa", "offline": "Desligado" }
-load_dictionary = { "unknown": "Sem conexão...", "full": "Total", "high": "Alta", "medium": "Média", "low": "Limitada",  "idle": "Inativa" }
+status_dictionary = { 
+    "unknown": "Sem conexão com a API. ❌",                   
+    "normal": "Normal ✅", 
+    "surge": "Falhando ⁉️", 
+    "delayed": "Lento 🐢", 
+    "idle": "Inativo 💤", 
+    "offline": "Fora do ar ❌" 
+    }
+capacity_dictionary = { 
+    "unknown": "Sem conexão...", 
+    "full": "Cheia", 
+    "high": "Alta", 
+    "medium": "Média", 
+    "low": "Baixa", 
+    "offline": "Desligado" 
+    }
+load_dictionary = { 
+    "unknown": "Sem conexão...", 
+    "full": "Total", 
+    "high": "Alta", 
+    "medium": "Média", 
+    "low": "Limitada",  
+    "idle": "Inativa" 
+    }
 
 #   API de status
 #       A cada 30 segundos, uma request para a Steam é feita, retornando um JSON
-#       Pegamos esse JSON (iterável) e escolhemos valores específicos (serviços,
-#       criador de partidas...) Retornamos o status (caso não seja "normal") em 
-#       um canal específico do Discord.
+#       Pegamos esse JSON e escolhemos valores específicos (serviços, criador de 
+#       partidas...) Retornamos o status (caso não seja "normal") em um canal 
+#       específico do Discord.
+#
 
 async def get_services():
     while True:
@@ -103,7 +125,12 @@ async def embed_services():
     matchmaker = response['matchmaker']['scheduler']
     datacenters = response['datacenters']
 
-    state.update({ "sessions_logon": sessions_logon, "community": community, "matchmaker": matchmaker, "datacenters": datacenters })
+    state.update({ 
+        "sessions_logon": sessions_logon, 
+        "community": community, 
+        "matchmaker": matchmaker, 
+        "datacenters": datacenters 
+        })
     await get_services()
 
 @client.event
@@ -125,7 +152,11 @@ async def on_reaction_add(reaction: discord.Reaction, user: discord.User):
     
     embed = discord.Embed()
     embed.title = "Counter-Strike 2 — Serviços"
-    embed.description =f"Sessões: `{status_dictionary[state['sessions_logon']]}`\nComunidade: `{status_dictionary[state['community']]}`\nCriador de partidas: `{status_dictionary[state['matchmaker']]}`\n\nPara invocar essa mensagem, digite `cs caiu`."
+    embed.description =f"""
+    Sessões: `{status_dictionary[state['sessions_logon']]}`
+    Comunidade: `{status_dictionary[state['community']]}`
+    Criador de partidas: `{status_dictionary[state['matchmaker']]}`
+    \nPara invocar essa mensagem, digite `cs caiu`."""
 
     embed.color = discord.Color.blue()
 
