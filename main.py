@@ -170,7 +170,7 @@ async def on_message(message: discord.Message):
   if message.author.bot:
     return
 
-  if message.content.startswith("cs caiu"):
+  if message.content.lower().startswith("cs caiu"):
     await message.add_reaction("❓")
 
 
@@ -179,7 +179,7 @@ async def on_message(message: discord.Message):
     if message.author.bot:
         return
     
-    if message.content.startswith("cs caiu"):     
+    if message.content.lower().startswith("cs caiu"):     
         await message.add_reaction("❓")
 
 #
