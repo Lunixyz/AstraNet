@@ -133,6 +133,18 @@ async def embed_services():
         })
     await get_services()
 
+def embed_function():
+    embed = discord.Embed()
+    embed.title = "Counter-Strike 2 — Serviços"
+    embed.description =f"""
+    Sessões: `{status_dictionary[state['sessions_logon']]}`
+    Comunidade: `{status_dictionary[state['community']]}`
+    Criador de partidas: `{status_dictionary[state['matchmaker']]}`
+    \nPara invocar essa mensagem, digite `cs caiu`."""
+
+    embed.color = discord.Color.blue()
+    return embed
+
 @client.event
 async def on_reaction_add(reaction: discord.Reaction, user: discord.User):
 
@@ -150,28 +162,11 @@ async def on_reaction_add(reaction: discord.Reaction, user: discord.User):
     if reaction.emoji != "❓":
         return
     
-    embed = discord.Embed()
-    embed.title = "Counter-Strike 2 — Serviços"
-    embed.description =f"""
-    Sessões: `{status_dictionary[state['sessions_logon']]}`
-    Comunidade: `{status_dictionary[state['community']]}`
-    Criador de partidas: `{status_dictionary[state['matchmaker']]}`
-    \nPara invocar essa mensagem, digite `cs caiu`."""
-
-    embed.color = discord.Color.blue()
+    embed = embed_function()
 
     await reaction.message.reply(embed=embed)
     await reaction.remove(client.user)
     await reaction.remove(user)
-    
-
-@client.event
-async def on_message(message: discord.Message):
-  if message.author.bot:
-    return
-
-  if message.content.lower().startswith("cs caiu"):
-    await message.add_reaction("❓")
 
 
 @client.event
@@ -181,7 +176,10 @@ async def on_message(message: discord.Message):
     
     if message.content.lower().startswith("cs caiu"):     
         await message.add_reaction("❓")
-
+    
+    if message.content.lower().startswith(">status"):
+        embed = embed_function()
+        await message.reply(embed=embed)
 #
 #   Inicialização
 #       Após o BOT inicializar, logo chamamos o asyncio para criar uma tarefa assíncrona
@@ -195,3 +193,4 @@ async def on_ready():
         asyncio.create_task(embed_services())
     except asyncio.CancelledError:
         pass
+
