@@ -1,6 +1,7 @@
 import discord
 import requests
 import asyncio
+import time
 
 intents = discord.Intents.default()
 intents.message_content = True 
@@ -12,7 +13,7 @@ client = discord.Client(intents=intents)
 #       Implementar um JSON com configurações...
 #
 
-channel_id = 1156680390015189033
+channel_id = 733465378360918066
 
 #
 #   Estado atual & último
@@ -25,8 +26,7 @@ state = {}
 last_state = {
     "sessions_logon": "unknown",
     "community": "unknown",
-    "matchmaker": "unknown",
-    "datacenters": "unknown"
+    "matchmaker": "unknown"
 }
 
 #   Dicionários de conversão
@@ -37,8 +37,8 @@ status_dictionary = {
     "unknown": "Sem conexão com a API. ❌",                   
     "normal": "Normal ✅", 
     "surge": "Falhando ⁉️", 
-    "delayed": "Lento 🐢", 
-    "idle": "Inativo 💤", 
+    "delayed": "Lento(a) 🐢", 
+    "idle": "Inativo(a) 💤", 
     "offline": "Fora do ar ❌" 
     }
 capacity_dictionary = { 
@@ -69,6 +69,7 @@ async def get_services():
     while True:
 
         channel = client.get_channel(channel_id)
+        embed = discord.Embed()
 
         if not channel:
             return
@@ -77,35 +78,32 @@ async def get_services():
             #       Caso X serviço não esteja "normal" e não seja igual ao mesmo 
             #       valor de antes, envie uma mensagem no canal Y.
 
+        content = "# Status do Counter-Strike! :warning:"
+
         if state['sessions_logon'] != "normal" and last_state["sessions_logon"] != state['sessions_logon']:
             last_state["sessions_logon"] = state['sessions_logon']
-            embed = discord.Embed()
-
             embed.title="Sessões"
             embed.description=f"A sessão de logon está `{status_dictionary[state['sessions_logon']]}`"
             embed.colour=discord.Color.red()
+            return await channel.send(content=content, embed=embed)
                
-            await channel.send(embed=embed)
 
         if state['community'] != "normal" and last_state["community"] != state['community']:
             last_state["community"] = state['community']
-            embed = discord.Embed()
-            
             embed.title="Comunidade"
             embed.description=f"A comunidade está `{status_dictionary[state['community']]}`"
             embed.colour=discord.Color.red()
+            return await channel.send(content=content, embed=embed)
 
-            await channel.send(embed=embed)
 
         if state['matchmaker'] != "normal" and last_state["matchmaker"] != state['matchmaker']:
             last_state["matchmaker"] = state['matchmaker']
-            embed = discord.Embed()
-            
             embed.title="Criador de partidas"
             embed.description=f"O criador de partidas está `{status_dictionary[state['matchmaker']]}`"
             embed.colour=discord.Color.red()
+            return await channel.send(content=content, embed=embed)
 
-            await channel.send(embed=embed)
+
         await asyncio.sleep(30)
 
 async def embed_services(): 
@@ -123,14 +121,15 @@ async def embed_services():
     sessions_logon = response['services']['SessionsLogon']
     community = response['services']['SteamCommunity']
     matchmaker = response['matchmaker']['scheduler']
-    datacenters = response['datacenters']
+
+    state.clear()
 
     state.update({ 
         "sessions_logon": sessions_logon, 
         "community": community, 
         "matchmaker": matchmaker, 
-        "datacenters": datacenters 
         })
+    
     await get_services()
 
 def embed_function():
@@ -140,7 +139,7 @@ def embed_function():
     Sessões: `{status_dictionary[state['sessions_logon']]}`
     Comunidade: `{status_dictionary[state['community']]}`
     Criador de partidas: `{status_dictionary[state['matchmaker']]}`
-    \nPara invocar essa mensagem, digite `cs caiu`."""
+    \nPara invocar essa mensagem, digite `cs caiu` ou `>status`."""
 
     embed.color = discord.Color.blue()
     return embed
@@ -168,13 +167,12 @@ async def on_reaction_add(reaction: discord.Reaction, user: discord.User):
     await reaction.remove(client.user)
     await reaction.remove(user)
 
-
 @client.event
 async def on_message(message: discord.Message):
     if message.author.bot:
         return
     
-    if message.content.lower().startswith("cs caiu"):     
+    if message.content.lower().startswith("cs caiu"):
         await message.add_reaction("❓")
     
     if message.content.lower().startswith(">status"):
