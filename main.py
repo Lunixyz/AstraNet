@@ -1,7 +1,9 @@
 import discord
 import requests
 import asyncio
+import threading
 import time
+import os
 
 intents = discord.Intents.default()
 intents.message_content = True 
@@ -57,6 +59,11 @@ load_dictionary = {
     "low": "Limitada",  
     "idle": "Inativa" 
     }
+api_status_dictionary = {
+    200: "OK",
+    400: "Bad Request",
+    500: "Internal Server Error!!"
+}
 
 #   API de status
 #       A cada 30 segundos, uma request para a Steam é feita, retornando um JSON
@@ -66,45 +73,48 @@ load_dictionary = {
 #
 
 async def get_services():
-    while True:
+    channel = client.get_channel(channel_id)
+    embed = discord.Embed()
 
-        channel = client.get_channel(channel_id)
-        embed = discord.Embed()
 
-        if not channel:
-            return
+    if not channel:
+        return
             
             #   Verificações
             #       Caso X serviço não esteja "normal" e não seja igual ao mesmo 
             #       valor de antes, envie uma mensagem no canal Y.
 
-        content = "# Status do Counter-Strike! :warning:"
-
-        if state['sessions_logon'] != "normal" and last_state["sessions_logon"] != state['sessions_logon']:
-            last_state["sessions_logon"] = state['sessions_logon']
-            embed.title="Sessões"
-            embed.description=f"A sessão de logon está `{status_dictionary[state['sessions_logon']]}`"
-            embed.colour=discord.Color.red()
-            return await channel.send(content=content, embed=embed)
+    content = "# Status do Counter-Strike! :warning:"
+    
+    if state['sessions_logon'] != "normal" and last_state["sessions_logon"] != state['sessions_logon']:
+        last_state["sessions_logon"] = state['sessions_logon']
+        print(f"[Sessions] {state['sessions_logon']}")
+        embed.title="Sessões"
+        embed.description=f"A sessão de logon está `{status_dictionary[state['sessions_logon']]}`"
+        embed.colour=discord.Color.red()
+        return await channel.send(content=content, embed=embed)
                
 
-        if state['community'] != "normal" and last_state["community"] != state['community']:
-            last_state["community"] = state['community']
-            embed.title="Comunidade"
-            embed.description=f"A comunidade está `{status_dictionary[state['community']]}`"
-            embed.colour=discord.Color.red()
-            return await channel.send(content=content, embed=embed)
+    if state['community'] != "normal" and last_state["community"] != state['community']:
+        last_state["community"] = state['community']
+        print(f"[Community] {state['community']}")
+        embed.title="Comunidade"
+        embed.description=f"A comunidade está `{status_dictionary[state['community']]}`"
+        embed.colour=discord.Color.red()
+        return await channel.send(content=content, embed=embed)
 
 
-        if state['matchmaker'] != "normal" and last_state["matchmaker"] != state['matchmaker']:
-            last_state["matchmaker"] = state['matchmaker']
-            embed.title="Criador de partidas"
-            embed.description=f"O criador de partidas está `{status_dictionary[state['matchmaker']]}`"
-            embed.colour=discord.Color.red()
-            return await channel.send(content=content, embed=embed)
-
-
-        await asyncio.sleep(30)
+    if state['matchmaker'] != "normal" and last_state["matchmaker"] != state['matchmaker']:
+        last_state["matchmaker"] = state['matchmaker']
+        print(f"[Matchmaker] {state['matchmaker']}")
+        embed.title="Criador de partidas"
+        embed.description=f"O criador de partidas está `{status_dictionary[state['matchmaker']]}`"
+        embed.colour=discord.Color.red()
+        return await channel.send(content=content, embed=embed)
+    
+    print(f"[Sessions] {state['sessions_logon']}")
+    print(f"[Community] {state['community']}")
+    print(f"[Matchmaker] {state['matchmaker']}")
 
 async def embed_services(): 
 
@@ -117,20 +127,22 @@ async def embed_services():
         
     api = requests.get('https://ares.lunxi.dev/status')
     response = api.json()["data"]["status"]
+    os.system('cls')
+    print(f"[Ares API] {api_status_dictionary[api.status_code]}")
+
+
+    last_state.update(state)
+    state.clear()
 
     sessions_logon = response['services']['SessionsLogon']
     community = response['services']['SteamCommunity']
     matchmaker = response['matchmaker']['scheduler']
-
-    state.clear()
 
     state.update({ 
         "sessions_logon": sessions_logon, 
         "community": community, 
         "matchmaker": matchmaker, 
         })
-    
-    await get_services()
 
 def embed_function():
     embed = discord.Embed()
@@ -179,6 +191,19 @@ async def on_message(message: discord.Message):
         embed = embed_function()
         await message.reply(embed=embed)
 #
+#   Threading...
+#       Utilizando uma função de Threading, podemos rodar funções cíclicas ou loops
+#       que não bloqueiam o código principal de funcionar, permitido o funcionamento
+#       de todo código sem esperar.
+
+async def thread():
+    starttime = time.time()
+    while True:
+        await embed_services()
+        await get_services()
+        time.sleep(5 - ((time.time() - starttime) % 5))
+
+#
 #   Inicialização
 #       Após o BOT inicializar, logo chamamos o asyncio para criar uma tarefa assíncrona
 #       Essa tarefa assíncrona segura a função de obtenção de dados da API, a cada 30 
@@ -187,8 +212,6 @@ async def on_message(message: discord.Message):
 @client.event
 async def on_ready():
     print(f"Logged in as {client.user}")
-    try:
-        asyncio.create_task(embed_services())
-    except asyncio.CancelledError:
-        pass
+    threading.Thread(target=lambda: asyncio.run(thread())).start()
+
 
