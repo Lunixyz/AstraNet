@@ -1,7 +1,7 @@
+from json import JSONDecodeError
 import discord
 import requests
 import asyncio
-import threading
 import time
 import os
 
@@ -126,7 +126,11 @@ async def embed_services():
     #
         
     api = requests.get('https://ares.lunxi.dev/status')
-    response = api.json()["data"]["status"]
+    try:
+        response = api.json()["data"]["status"]
+    except JSONDecodeError:
+        print(f"Received an invalid response from the Ares API. ({api_status_dictionary[api.status_code]})")
+        return
     os.system('cls')
     print(f"[Ares API] {api_status_dictionary[api.status_code]}")
 
@@ -201,7 +205,7 @@ async def thread():
     while True:
         await embed_services()
         await get_services()
-        time.sleep(5 - ((time.time() - starttime) % 5))
+        await asyncio.sleep(30 - ((time.time() - starttime) % 30))
 
 #
 #   Inicialização
@@ -212,6 +216,5 @@ async def thread():
 @client.event
 async def on_ready():
     print(f"Logged in as {client.user}")
-    threading.Thread(target=lambda: asyncio.run(thread())).start()
-
-
+    loop = asyncio.get_event_loop()
+    asyncio.run_coroutine_threadsafe(thread(), loop)
