@@ -23,8 +23,13 @@ load_dictionary = {
     "idle": "Inativa" 
     }
 api_status_dictionary = {
-    200: "OK",
-    400: "Bad Request",
-    504: "API Timeout!!",
-    500: "Internal Server Error!!"
+    200: "OK ✅",
+    400: "Bad Request ❌",
+    504: "API Timeout!! 🐢",
+    500: "Internal Server Error!! ❌❌"
+}
+titles = {
+    "sessions_logon": "Sessões",
+    "community": "Comunidade",
+    "matchmaker": "Criador de partidas"
 }

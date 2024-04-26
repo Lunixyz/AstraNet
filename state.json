@@ -1,0 +1,12 @@
+{
+    "state": {
+        "sessions_logon": "normal",
+        "community": "normal",
+        "matchmaker": "normal"
+    },
+    "last_state": {
+        "sessions_logon": "unknown",
+        "community": "unknown",
+        "matchmaker": "unknown"
+    }
+}

@@ -1,43 +1,32 @@
 import discord
-from utils.dictionaries import status_dictionary
+import json
+from utils.dictionaries import status_dictionary, titles
 
-async def get_services(client: discord.Client, channel_id: int, state: dict, last_state: dict):
-    channel = client.get_channel(channel_id)
-    embed = discord.Embed()
+async def get_services(client: discord.Client, channel_id: int, role_id: int):
+    with open('state.json', 'r+') as f:
+        f.seek(0)
 
-    print(f"[Sessions] {state['sessions_logon']}")
-    print(f"[Community] {state['community']}")
-    print(f"[Matchmaker] {state['matchmaker']}")
+        channel = client.get_channel(channel_id)
+        embed = discord.Embed()
+        open_state = json.load(f)
+        state = open_state["state"]
+        last_state = open_state["last_state"]
 
-    if not channel:
-        return
+        if not channel:
+            return
 
-    content = "# Status do Counter-Strike! :warning:"
-    
-    if state['sessions_logon'] != "normal" and last_state["sessions_logon"] != state['sessions_logon']:
-        last_state["sessions_logon"] = state['sessions_logon']
-        print(f"[Sessions] {state['sessions_logon']}")
-        embed.title="Sessões"
-        embed.description=f"A sessão de logon está `{status_dictionary[state['sessions_logon']]}`"
-        embed.colour=discord.Color.red()
-        return await channel.send(content=content, embed=embed)
-               
+        content = f"# Atenção <@{role_id}>!\n ## Status da rede Counter-Strike:"
+        
+        for service in state:
+            print(f"[{titles[service]}] {status_dictionary[state[service]]}")
+            
+            if state[service] != "normal" and last_state[service] != state[service]:
+                last_state[service] = state[service]
+                json.dump(open_state, f, indent=4)
 
-    if state['community'] != "normal" and last_state["community"] != state['community']:
-        last_state["community"] = state['community']
-        print(f"[Community] {state['community']}")
-        embed.title="Comunidade"
-        embed.description=f"A comunidade está `{status_dictionary[state['community']]}`"
-        embed.colour=discord.Color.red()
-        return await channel.send(content=content, embed=embed)
+                embed.title = titles[service]
+                embed.description = f"{titles[service]} está `{status_dictionary[state[service]]}`"
+                embed.color = discord.Color.red()
+                await channel.send(content=content, embed=embed)
 
-
-    if state['matchmaker'] != "normal" and last_state["matchmaker"] != state['matchmaker']:
-        last_state["matchmaker"] = state['matchmaker']
-        print(f"[Matchmaker] {state['matchmaker']}")
-        embed.title="Criador de partidas"
-        embed.description=f"O criador de partidas está `{status_dictionary[state['matchmaker']]}`"
-        embed.colour=discord.Color.red()
-        return await channel.send(content=content, embed=embed)
-
-    state.clear()
+        f.truncate()
