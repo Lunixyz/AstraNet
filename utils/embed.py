@@ -2,6 +2,13 @@ import json
 import discord
 from utils.dictionaries import status_dictionary
 
+#
+#   embed_function()
+#       Essa função irá criar uma Embed utilizando a lib do Discord.py,
+#       logo depois disso, irá abrir o arquivo "state.json" com a permi-
+#       ssão "r" (leitura), e então, definirá o título, descrição e cor
+#       da Embed.      
+#
 
 def embed_function():
     embed = discord.Embed()

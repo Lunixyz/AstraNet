@@ -5,6 +5,13 @@ from utils.services import get_services
 import asyncio
 import discord
 
+#
+#   thread(client, channel_id, role_id)
+#       Essa função é responsável para rodar loop principal
+#       do código inteiro, ela irá juntar todas as outras em
+#       um local só.    
+#
+
 async def thread(client: discord.Client, channel_id: int, role_id: int):
     starttime = time.time()
 

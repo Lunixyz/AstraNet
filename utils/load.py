@@ -3,6 +3,15 @@ import json
 import os
 from utils.dictionaries import api_status_dictionary
 
+#
+#   Load()
+#       Essa função irá abrir o arquivo "state.json" (com o método open)
+#       utilizando as permissões "r+" (escrita + leitura) e então irá
+#       ler o JSON dentro deste arquivo. Após ler, ele definirá todos os
+#       valores dentro do objeto "state" para suas respectivas respostas
+#       da API.
+#
+
 async def load():
     with open('state.json', 'r+') as f:
         open_state = json.load(f)

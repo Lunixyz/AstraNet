@@ -1,12 +1,23 @@
 {
     "state": {
         "sessions_logon": "normal",
-        "community": "normal",
+        "community": "delayed",
         "matchmaker": "normal"
     },
     "last_state": {
         "sessions_logon": "unknown",
         "community": "unknown",
+        "matchmaker": "unknown"
+    }
+}{
+    "state": {
+        "sessions_logon": "normal",
+        "community": "delayed",
+        "matchmaker": "normal"
+    },
+    "last_state": {
+        "sessions_logon": "unknown",
+        "community": "delayed",
         "matchmaker": "unknown"
     }
 }

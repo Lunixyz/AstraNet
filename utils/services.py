@@ -2,6 +2,18 @@ import discord
 import json
 from utils.dictionaries import status_dictionary, titles
 
+#
+#   get_services(client, channel_id, role_id)
+#       Essa função abre o arquivo "state.json" com a permissão
+#       "r+" (escrita e leitura), procura o canal com o ID
+#       "channel_id" no Discord e verifica se ele existe e pode
+#       ser utilizado. Após isso, uma Embed será criada e
+#       a verificação dos valores dentro do "state.json" é feita,
+#       se caso um dos valores não seja "normal" e não seja igual
+#       ao último valor reportado, um aviso é emitido para o canal
+#       com a Embed criada.
+#
+
 async def get_services(client: discord.Client, channel_id: int, role_id: int):
     with open('state.json', 'r+') as f:
         f.seek(0)
