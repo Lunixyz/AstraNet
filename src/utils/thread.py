@@ -2,17 +2,19 @@ import time
 import os
 from utils.load import load
 from utils.services import get_services
+from discord.ext import commands
 import asyncio
-import discord
+
 
 #
 #   thread(client, channel_id, role_id)
 #       Essa função é responsável para rodar loop principal
 #       do código inteiro, ela irá juntar todas as outras em
-#       um local só.    
+#       um local só.
 #
 
-async def thread(client: discord.Client, channel_id: int, role_id: int):
+
+async def thread(client: commands.Bot, channel_id: int, role_id: int):
     starttime = time.time()
 
     while True:
@@ -22,10 +24,10 @@ async def thread(client: discord.Client, channel_id: int, role_id: int):
 
         while services is False:
             try:
-                services = await load()
+                services = await load(client=client, channel_id=channel_id)
             except services is True:
                 break
 
         await get_services(client, channel_id, role_id)
-        
-        await asyncio.sleep(30 - ((time.time() - starttime) % 30))
+
+        await asyncio.sleep(5 - ((time.time() - starttime) % 5))

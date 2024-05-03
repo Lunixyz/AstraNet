@@ -1,4 +1,5 @@
 import json
+import os
 import discord
 from utils.dictionaries import status_dictionary
 
@@ -12,7 +13,7 @@ from utils.dictionaries import status_dictionary
 
 def embed_function():
     embed = discord.Embed()
-    with open('state.json', 'r') as f:
+    with open(f'{os.getcwd()}/../state.json', 'r') as f:
         open_state = json.load(f)
         state = open_state["state"]
 
