@@ -32,11 +32,6 @@ class Reputation(commands.GroupCog, name="análise"):
     )
     async def list(self, interaction: discord.Interaction, usuario: discord.User):
 
-        #
-        #   O Discord odeia ser customizável.
-        #   Eu odeio profundamente isso.
-        #
-
         with open(f"{os.getcwd()}/user_data/users.json", "r", encoding="utf-8") as f:
             j = json.load(f)
 

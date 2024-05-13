@@ -1,16 +1,6 @@
 from discord.ext import commands
-from utils.embed import embed_function
+from utils.embed import embed
 import discord
-
-#
-#   Status()
-#       Esse evento é responsável por verificar se uma mensagem enviada
-#       no Discord começa com "cs caiu" ou "status" e roda as respecti-
-#       vas funções.
-#
-#       No caso do "cs caiu", o BOT irá adicionar uma reação na mensagem
-#       e espera que o usuário reaja para continuar.
-#
 
 
 class Status(commands.Cog):
@@ -19,7 +9,7 @@ class Status(commands.Cog):
 
     @commands.Command
     async def status(self, ctx: commands.Context):
-        await ctx.message.reply(embed=embed_function())
+        await ctx.message.reply(embed=embed().setup())
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
@@ -37,7 +27,7 @@ class Status(commands.Cog):
         if ctx.emoji != "❓":
             return
 
-        await ctx.message.reply(embed=embed_function())
+        await ctx.message.reply(embed=embed().setup())
         await ctx.remove(self.bot.user)
 
 

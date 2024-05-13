@@ -1,8 +1,3 @@
-#
-#   Dicionários
-#       Feitos para tradução direta de valores.
-#
-
 status_dictionary = {
     "unknown": "Sem conexão com a API. ❌",
     "normal": "Normal ✅",

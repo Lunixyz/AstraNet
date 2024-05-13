@@ -5,63 +5,63 @@ import discord
 from discord.ext import commands
 from utils.dictionaries import api_status_dictionary
 
-#
-#   Load()
-#       Essa função irá abrir o arquivo "state.json" (com o método open)
-#       utilizando as permissões "r+" (escrita + leitura) e então irá
-#       ler o JSON dentro deste arquivo. Após ler, ele definirá todos os
-#       valores dentro do objeto "state" para suas respectivas respostas
-#       da API.
-#
 
+class loader:
+    def __init__(self, bot: commands.Bot):
+        self.bot = bot
 
-async def load(client: commands.Bot, channel_id: str):
+    def setup_services(self) -> requests.Response:
+        response = None
 
-    with open(f"{os.getcwd()}/../state.json", "r+") as f:
-        open_state = json.load(f)
-        state = open_state["state"]
-
-        api = requests.get("https://ares.lunxi.dev/status")
         try:
+            api = requests.get("https://ares.lunxi.dev/status")
             response = api.json()["data"]["status"]
-        except json.JSONDecodeError:
+        except (json.JSONDecodeError, requests.exceptions.Timeout):
             os.system("cls")
             print("Received an invalid response from the Ares API.")
-            return False
-        except requests.exceptions.Timeout:
-            os.system("cls")
-            print("Ares API timed out.")
-            return False
+            return None
+        except api.status_code != 200:
+            print(f"[Astra API] {api_status_dictionary[response.status_code]}")
+            print("woops 2")
+            return None
 
-        if response["services"] == "unknown" and response["matchmaking"] == "unknown":
-            channel = client.get_channel(channel_id)
-            embed = discord.Embed()
+        return response
 
-            if not channel:
-                return 
+    async def embed_message(self, channel_id, content, title, description):
+        channel = self.bot.get_channel(channel_id)
+        if not channel:
+            return
+        embed = discord.Embed(
+            title=title, description=description, color=discord.Color.red()
+        )
+        await channel.send(content=content, embed=embed)
 
-            content = " O seguinte serviço está fora do ar:"
+    def main_loader(self, channel_id):
+        with open(f"{os.getcwd()}/../state.json", "r+") as f:
+            open_state = json.load(f)
+            state = open_state["state"]
 
-            embed.title = "API"
-            embed.description = "A API da Steam se encontra fora do ar. Rede Counter-Strike inacessível."
+            response = self.setup_services()
 
-            embed.color = discord.Color.red()
-            await channel.send(content=content, embed=embed)
-            return False
+            if (
+                response is None
+                or response["services"] == "unknown"
+                and response["matchmaking"] == "unknown"
+            ):
+                print("woops")
+                self.embed_message(
+                    channel_id,
+                    " O seguinte serviço está fora do ar:",
+                    "API",
+                    "A API da Steam se encontra fora do ar. Rede Counter-Strike inacessível.",
+                )
+                return False
 
-        os.system("cls")
-        print(f"[Astra API] {api_status_dictionary[api.status_code]}")
-        if api.status_code != 200:
-            return False
+            state["sessions_logon"] = response["services"]["SessionsLogon"]
+            state["community"] = response["services"]["SteamCommunity"]
+            state["matchmaker"] = response["matchmaker"]["scheduler"]
 
-        state["sessions_logon"] = response["services"]["SessionsLogon"]
-        state["community"] = response["services"]["SteamCommunity"]
-        state["matchmaker"] = response["matchmaker"]["scheduler"]
-
-        open_state["state"] = state
-
-        f.seek(0)
-        json.dump(open_state, f, indent=4)
-        f.truncate()
-
-    return True
+            f.seek(0)
+            json.dump(open_state, f, indent=4)
+            f.truncate()
+        return True

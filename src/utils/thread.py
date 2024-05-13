@@ -1,33 +1,30 @@
 import time
 import os
-from utils.load import load
-from utils.services import get_services
-from discord.ext import commands
+from utils.load import loader
+from utils.services import cs_services
 import asyncio
 
 
-#
-#   thread(client, channel_id, role_id)
-#       Essa função é responsável para rodar loop principal
-#       do código inteiro, ela irá juntar todas as outras em
-#       um local só.
-#
+class thread:
+    def __init__(self, bot, channel_id, role_id):
+        self.bot = bot
+        self.channel_id = channel_id
+        self.role_id = role_id
 
+    async def setup(self):
+        starttime = time.time()
 
-async def thread(client: commands.Bot, channel_id: int, role_id: int):
-    starttime = time.time()
+        while True:
+            os.system("cls")
+            print("[Internal] Running thread loop")
+            services = False
 
-    while True:
-        os.system("cls")
-        print("[Internal] Running thread loop")
-        services = False
+            while services is False:
+                try:
+                    load = loader(self.bot)
+                    services = load.main_loader(self.channel_id)
+                except services is True:
+                    break
 
-        while services is False:
-            try:
-                services = await load(client=client, channel_id=channel_id)
-            except services is True:
-                break
-
-        await get_services(client, channel_id, role_id)
-
-        await asyncio.sleep(5 - ((time.time() - starttime) % 5))
+            await cs_services(self.bot).check_services(self.channel_id, self.role_id)
+            await asyncio.sleep(5 - ((time.time() - starttime) % 5))
