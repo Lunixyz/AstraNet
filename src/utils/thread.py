@@ -1,5 +1,4 @@
 import time
-import os
 from utils.load import loader
 from utils.services import cs_services
 import asyncio
@@ -15,8 +14,6 @@ class thread:
         starttime = time.time()
 
         while True:
-            os.system("cls")
-            print("[Internal] Running thread loop")
             services = False
 
             while services is False:

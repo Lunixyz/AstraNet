@@ -35,7 +35,6 @@ class cs_services:
             last_state = open_state["last_state"]
 
             for service in state:
-                print(f"[{titles[service]}] {status_dictionary[state[service]]}")
                 if state[service] != "normal" and last_state[service] != state[service]:
                     await self.embed_message(
                         channel_id,

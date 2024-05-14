@@ -14,15 +14,13 @@ class loader:
         response = None
 
         try:
-            api = requests.get("https://ares.lunxi.dev/status")
-            response = api.json()["data"]["status"]
+            api = requests.get("http://localhost:3000/app/730/status")
+            response = api.json()["data"]["result"]
         except (json.JSONDecodeError, requests.exceptions.Timeout):
-            os.system("cls")
             print("Received an invalid response from the Ares API.")
             return None
         except api.status_code != 200:
-            print(f"[Astra API] {api_status_dictionary[response.status_code]}")
-            print("woops 2")
+            print(f"{api_status_dictionary[response.status_code]}")
             return None
 
         return response
@@ -48,7 +46,6 @@ class loader:
                 or response["services"] == "unknown"
                 and response["matchmaking"] == "unknown"
             ):
-                print("woops")
                 self.embed_message(
                     channel_id,
                     " O seguinte serviço está fora do ar:",
@@ -59,7 +56,7 @@ class loader:
 
             state["sessions_logon"] = response["services"]["SessionsLogon"]
             state["community"] = response["services"]["SteamCommunity"]
-            state["matchmaker"] = response["matchmaker"]["scheduler"]
+            state["matchmaker"] = response["matchmaking"]["scheduler"]
 
             f.seek(0)
             json.dump(open_state, f, indent=4)

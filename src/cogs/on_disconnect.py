@@ -11,18 +11,14 @@ class Connection(commands.Cog):
 
     @commands.Cog.listener()
     async def on_disconnect(self):
-        print("[AstraNet] Disconnected from Discord, waiting for session to resume...")
+        print("Disconnected from Discord, waiting for session to resume...")
 
     @commands.Cog.listener()
     async def on_resumed(self):
         with open(f"{os.getcwd()}/../state.json", "r+") as f:
             data = json.load(f)
-            print("[AstraNet] Session resumed, re-running thread-loop.")
-            loop = asyncio.get_event_loop()
-            asyncio.run_coroutine_threadsafe(
-                thread(self.bot, data["channel"], data["roleid"]), loop
-            )
-
+            print("Session resumed, re-running thread-loop.")
+            asyncio.ensure_future(thread(self, data["channel"], data["roleid"]).setup())
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(Connection(bot))
