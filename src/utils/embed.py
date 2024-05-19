@@ -12,9 +12,9 @@ class embed(discord.Embed):
             state = open_state["state"]
             self.title = "Counter-Strike 2 — Serviços"
             self.description = f"""
-            Sessões: `{status_dictionary[state['sessions_logon']]}`
-            Comunidade: `{status_dictionary[state['community']]}`
-            Criador de partidas: `{status_dictionary[state['matchmaker']]}`
-            \nPara invocar essa mensagem, digite `cs caiu` ou `>status`."""
+            Sessions: `{status_dictionary[state['sessions_logon']]}`
+            Community: `{status_dictionary[state['community']]}`
+            Matchmaker: `{status_dictionary[state['matchmaker']]}`
+            \nTo invoke this message, use `cs down` or `>status`."""
             self.color = discord.Color.blue()
         return self

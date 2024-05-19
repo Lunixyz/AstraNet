@@ -1,26 +1,36 @@
+#
+#   These dictionaries were created for translation purposes.
+#   The BOT was originally going to be used by non english-speaking people,
+#   that is why they're still here, but they are almost useless, since they 
+#   now are just uppercase versions of the original REST Engine values.
+#
+#   TO DO:
+#   - Remove these useless dictionaries.
+#
+
 status_dictionary = {
-    "unknown": "Sem conexão com a API. ❌",
+    "unknown": "Unknown",
     "normal": "Normal ✅",
-    "surge": "Falhando",
-    "delayed": "Lento(a)",
-    "idle": "Inativo(a)",
-    "offline": "Fora do ar ❌",
+    "surge": "Surge",
+    "delayed": "Delayed",
+    "idle": "Idle",
+    "offline": "Offline ❌",
 }
 capacity_dictionary = {
-    "unknown": "Sem conexão...",
-    "full": "Cheia",
-    "high": "Alta",
-    "medium": "Média",
-    "low": "Baixa",
-    "offline": "Desligado",
+    "unknown": "Unknown ❌",
+    "full": "Full ❌",
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low",
+    "offline": "Offline",
 }
 load_dictionary = {
-    "unknown": "Sem conexão...",
-    "full": "Total",
-    "high": "Alta",
-    "medium": "Média",
-    "low": "Limitada",
-    "idle": "Inativa",
+    "unknown": "Unknown ❌",
+    "full": "Full ❌",
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low",
+    "idle": "Idle",
 }
 api_status_dictionary = {
     200: "OK ✅",
@@ -29,7 +39,7 @@ api_status_dictionary = {
     500: "Internal Server Error!!",
 }
 titles = {
-    "sessions_logon": "Sessões",
-    "community": "Comunidade",
-    "matchmaker": "Criador de partidas",
+    "sessions_logon": "Sessions",
+    "community": "Community",
+    "matchmaker": "Matchmaker",
 }

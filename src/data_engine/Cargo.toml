@@ -1,0 +1,15 @@
+[package]
+name = "data_engine"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+reqwest = { version = "0.12", features = ["json"] }
+serde = "1.0.202"
+serde_derive = "1.0.202"
+serde_json = "1.0.117"
+tokio = { version = "1", features = ["full"] }
+
+[[bin]]
+name = "data_engine"
+path = "./src/main.rs"

@@ -2,6 +2,7 @@ import time
 from utils.load import loader
 from utils.services import cs_services
 import asyncio
+from utils.chn_verify import changenumber_check
 
 
 class thread:
@@ -24,4 +25,5 @@ class thread:
                     break
 
             await cs_services(self.bot).check_services(self.channel_id, self.role_id)
+            await changenumber_check(self.bot).setup()
             await asyncio.sleep(5 - ((time.time() - starttime) % 5))

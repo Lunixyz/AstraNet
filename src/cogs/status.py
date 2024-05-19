@@ -16,7 +16,7 @@ class Status(commands.Cog):
         if message.author.bot:
             return
 
-        if message.content.lower().startswith("cs caiu"):
+        if message.content.lower().startswith("cs down"):
             await message.add_reaction("❓")
 
     @commands.Cog.listener()

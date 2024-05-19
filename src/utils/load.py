@@ -48,9 +48,9 @@ class loader:
             ):
                 self.embed_message(
                     channel_id,
-                    " O seguinte serviço está fora do ar:",
+                    "The following services are offline:",
                     "API",
-                    "A API da Steam se encontra fora do ar. Rede Counter-Strike inacessível.",
+                    "The Steam API is offline.",
                 )
                 return False
 
