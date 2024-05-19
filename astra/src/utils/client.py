@@ -11,7 +11,7 @@ class AstraNet(commands.Bot):
         super().__init__(command_prefix=command_prefix, intents=intents)
 
     async def on_ready(self):
-        file = open(f"{os.getcwd()}/../config.json")
+        file = open(f"{os.getcwd()}/config.json")
         data = json.load(file)
 
         await handler().setup(self)
@@ -20,7 +20,7 @@ class AstraNet(commands.Bot):
         asyncio.ensure_future(thread(self, data["channel"], data["roleid"]).setup())
 
     def setup(self):
-        file = open(f"{os.getcwd()}/../config.json")
+        file = open(f"{os.getcwd()}/config.json")
         data = json.load(file)
         self.run(data["token"])
 

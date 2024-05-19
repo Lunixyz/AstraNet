@@ -18,9 +18,8 @@ class changenumber_check(commands.Cog):
                 print(f"-> [{process_name} Error] {line.strip()}")
 
     async def setup(self):
-        path = os.path.join(os.getcwd(), "data_engine", "data_engine.exe")
         data_engine = subprocess.Popen(
-            [path],
+            [f"{os.getcwd()}/data_engine/data_engine.exe"],
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -39,7 +38,7 @@ class changenumber_check(commands.Cog):
             data = json.load(f)
 
             if data["730"]["changenumber_diff"]["has_difference"]:
-                file = open(f"{os.getcwd()}/../config.json")
+                file = open(f"{os.getcwd()}/config.json")
                 config = json.load(file)
                 channel = self.bot.get_channel(int(config["channel"]))
 

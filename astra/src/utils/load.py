@@ -35,7 +35,7 @@ class loader:
         await channel.send(content=content, embed=embed)
 
     def main_loader(self, channel_id):
-        with open(f"{os.getcwd()}/../state.json", "r+") as f:
+        with open(f"{os.getcwd()}/astra/state.json", "r+") as f:
             open_state = json.load(f)
             state = open_state["state"]
 

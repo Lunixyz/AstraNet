@@ -7,7 +7,7 @@ from utils.dictionaries import status_dictionary
 class embed(discord.Embed):
 
     def setup(self):
-        with open(f"{os.getcwd()}/../state.json", "r") as f:
+        with open(f"{os.getcwd()}/astra/state.json", "r") as f:
             open_state = json.load(f)
             state = open_state["state"]
             self.title = "Counter-Strike 2 — Serviços"

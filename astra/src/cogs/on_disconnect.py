@@ -15,7 +15,7 @@ class Connection(commands.Cog):
 
     @commands.Cog.listener()
     async def on_resumed(self):
-        with open(f"{os.getcwd()}/../state.json", "r+") as f:
+        with open(f"{os.getcwd()}/astra/state.json", "r+") as f:
             data = json.load(f)
             print("Session resumed, re-running thread-loop.")
             asyncio.ensure_future(thread(self, data["channel"], data["roleid"]).setup())

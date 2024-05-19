@@ -7,12 +7,12 @@ class run_api:
         os.environ["PYTHONUNBUFFERED"] = "1"
 
         node = subprocess.Popen(
-            ["node", "rest_engine/dist/src/server.js"],
+            ["node", f"{os.getcwd()}/rest_engine/dist/src/server.js"],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
         )
         python = subprocess.Popen(
-            ["python", "./main.py"],
+            ["python", f"{os.getcwd()}/astra/src/main.py"],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
         )

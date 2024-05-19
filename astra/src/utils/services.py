@@ -29,7 +29,7 @@ class cs_services:
         await channel.send(content=content, embed=embed)
 
     async def check_services(self, channel_id: int, role_id: int):
-        with open(f"{os.getcwd()}/../state.json", "r+") as f:
+        with open(f"{os.getcwd()}/astra/state.json", "r+") as f:
             open_state = json.load(f)
             state = open_state["state"]
             last_state = open_state["last_state"]
